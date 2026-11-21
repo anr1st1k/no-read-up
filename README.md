@@ -1,1 +1,95 @@
 # ЛР 4. Регистрация и мандатная модель доступа
+
+Вариант 1. Соглашение об API - [API.md](API.md).
+
+## Текущее состояние
+
+Настроен запуск PostgreSQL через Docker Compose.
+
+## Требования
+
+- Docker Engine;
+- Docker Compose.
+- Python 3.14
+
+## Запуск базы данных
+
+Все команды должны выполняться из корня репозитория.
+
+1. Создание файла локальных настроек:
+
+```bash
+cp .env.example .env
+```
+
+2. Изменение пароля примера на свой
+
+3. Запуск базы:
+
+```bash
+docker compose up -d db
+```
+
+4. Просмотр состояния контейнера:
+
+```bash
+docker compose ps
+```
+
+## Подключение с ПК
+
+- Хост: "127.0.0.1"
+- Порт: "5433"
+- База: значение из ".env"
+- Пользователь: значение из ".env"
+- Пароль: значение из ".env"
+
+Внутри контейнера используется порт "5432".
+
+## Проверка SQL
+
+```bash
+docker compose exec db psql -U app -d no_read_up \
+  -c "SELECT current_database(), current_user;"
+```
+
+Ожидаемый результат: база `no_read_up`, пользователь `app` (данные из примера).
+
+## Остановка и хранение данных
+
+```bash
+docker compose down
+```
+
+Данные размещаются в именованном томе `postgres_data`.
+
+Команда `docker compose down -v` удаляет том и данные.
+
+Файл `.env` содержит локальные настройки и не добавляется в Git.
+
+## Проверка базы и применение сохраненной миграции
+
+Для команд ниже необходимо запустить `db` и активировать `.venv`:
+
+```
+python -m venv .venv
+source .venv/bin/activate
+```
+
+```
+python -m pip install -r backend/requirements.txt
+```
+
+```
+python check_db.py
+```
+
+```
+python -m alembic -c backend/alembic.ini upgrade head
+```
+
+```
+python -m alembic -c backend/alembic.ini current
+```
+
+`check_db` проверяет подключение. В случае успешного подключения выводится `1`.
