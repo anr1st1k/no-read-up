@@ -10,6 +10,7 @@
 
 - Docker Engine;
 - Docker Compose.
+- Python 3.14
 
 ## Запуск базы данных
 
@@ -65,3 +66,30 @@ docker compose down
 Команда `docker compose down -v` удаляет том и данные.
 
 Файл `.env` содержит локальные настройки и не добавляется в Git.
+
+## Проверка базы и применение сохраненной миграции
+
+Для команд ниже необходимо запустить `db` и активировать `.venv`:
+
+```
+python -m venv .venv
+source .venv/bin/activate
+```
+
+```
+python -m pip install -r backend/requirements.txt
+```
+
+```
+python check_db.py
+```
+
+```
+python -m alembic -c backend/alembic.ini upgrade head
+```
+
+```
+python -m alembic -c backend/alembic.ini current
+```
+
+`check_db` проверяет подключение. В случае успешного подключения выводится `1`.
