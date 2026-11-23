@@ -5,6 +5,7 @@ from alembic import context
 from backend.app.db import eng
 
 from backend.app.models.user import User, Base
+from backend.app.models.resource import Resource
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
